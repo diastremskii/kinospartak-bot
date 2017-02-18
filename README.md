@@ -16,7 +16,7 @@ Valid options are 'memjs' and 'fs'
 4. Go to your heroku app settings page and create the following config variables:
  - TOKEN: the token you received from the BotFather.
  - BOT_URL: your heroku app url *https://your-heroku-app-name.herokuapp.com*
- - CHANNEL: name of your channel to push updates. "@" symbol should be included *@channelname*
+ - CHANNEL: name of your channel to push updates. "@" symbol should be included (*@channelname*)
  - STORAGE_TYPE: Heroku does not support persistent FS changes, so it should be set to "memjs"
 5. Create a new Memcached cloud instance: ```heroku addons:create memcachedcloud:30``` (or manually [here](https://elements.heroku.com/addons/memcachedcloud))
 6. Add a new Heroku Scheduler add-on: ```heroku addons:create scheduler:standard``` (or manually [here](https://elements.heroku.com/addons/scheduler))
