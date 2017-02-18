@@ -1,0 +1,28 @@
+{
+  "name": "kinospartak-bot",
+  "version": "0.1.0",
+  "description": "A Telegram bot which provides interaction with kinospartak.ru",
+  "main": "app/bot.js",
+  "scripts": {
+    "start": "node ./app/bot.js",
+    "update": "node ./app/updateChannel.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniil Yastremskiy <Catharsis@post.cz>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheBeastOfCaerbannog/kinospartak-bot.git"
+  },
+  "bugs": "https://github.com/TheBeastOfCaerbannog/kinospartak-bot/issues",
+  "homepage": "https://github.com/TheBeastOfCaerbannog/kinospartak-bot",
+  "license": "MIT",
+  "dependencies": {
+    "htmlparser2": "^3.9.2",
+    "memjs": "^0.10.0",
+    "node-telegram-bot-api": "^0.26.0",
+    "request-promise": "^4.1.1"
+  },
+  "engines": {
+    "node": "6.9.5"
+  }
+}
