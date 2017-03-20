@@ -1,6 +1,5 @@
 'use strict'
 
-const kinospartakModel = require('./kinospartakModel');
 /**
  * Represents movie schedule for one day
  * @typedef {Object} Schedule
@@ -11,11 +10,14 @@ const kinospartakModel = require('./kinospartakModel');
  * @property {String} [movies[].category] - movie category
  */
 
+const kinospartakModel = require('./kinospartakModel');
+
 /**
  * @class Kinospartak controller
  * @type {Object}
  *
  */
+
 module.exports = class Kinospartak {
   constructor() {
 
@@ -26,6 +28,7 @@ module.exports = class Kinospartak {
    *
    * @return {Promise}     resolves to schedule
    */
+
   getSchedule() {
     if (this.schedule) {
       return Promise.resolve(this.schedule);
@@ -54,7 +57,37 @@ module.exports = class Kinospartak {
    * @return {Promise}  resolves to undefined
    */
   commitChanges() {
-    kinospartakModel.saveSchedule(this.schedule);
+    return kinospartakModel.saveSchedule(this.schedule);
+  };
+
+  /**
+   * getNews - get all news
+   *
+   * @return {Promise}  resolves to array of news from rss feed
+   */
+  getNews() {
+    return kinospartakModel.getNews();
+  };
+
+  /**
+   * latestNews - get news by saved offset
+   *
+   * @return {Promise}  resolves to array of filtered by offset news
+   */
+  getLatestNews() {
+    return Promise.all([
+      this.getNews(),
+      kinospartakModel.getNewsOffset()
+    ])
+      .then(([news, newsOffset]) => {
+        return news.filter(item => {
+          return item.pubDate > newsOffset;
+        });
+      })
+  };
+
+  setNewsOffset(newsOffset) {
+    return kinospartakModel.setNewsOffset(newsOffset);
   };
 
   /**

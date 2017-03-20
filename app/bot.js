@@ -2,7 +2,6 @@
 
 const config = require('../config');
 const TelegramBot = require('node-telegram-bot-api');
-
 const options = {
   webHook: {
     port: config.PORT

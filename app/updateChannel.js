@@ -9,13 +9,13 @@ const bot = new TelegramBot(config.TOKEN);
 const kinospartak = new Kinospartak();
 
 /**
- * scheduleToMessages - convert schedule objects to Telegram HTML messages
+ * formatSchedule - format schedule objects to Telegram HTML messages
  *
  * @param  {Schedule[]} schedule  movie schedule
  * @return {String[]}          array of html marked up messages
  * @see Kinospartak class for Schedule definition
  */
-function scheduleToMessages(schedule) {
+function formatSchedule(schedule) {
   return schedule.map((day) => {
     return day.movies.reduce((message, movie) => {
       message += `\n<a href="${movie.url}">${movie.name}</a>`;
@@ -42,6 +42,21 @@ function sendInOrder(messages) {
 }
 
 /**
+ * formatNews - format news to Telegram HTML messages
+ *
+ * @param  {Object[]} news array of news
+ * @return {String[]}      array of html marked up messages
+ */
+function formatNews(news) {
+  return news.map((news) => {
+    let message = '';
+    message += `<a href="${news.link}">${news.title}</a>`;
+    message += `\n${news.description}`;
+    return message;
+  });
+}
+
+/**
  * updateSchedule - update schedule and push updates to Telegram channel
  *
  * @return {Promise}
@@ -49,10 +64,22 @@ function sendInOrder(messages) {
 function updateSchedule() {
   return kinospartak.getChanges()
     .then(changes =>
-      changes.length ? scheduleToMessages(changes) : Promise.reject('No changes'))
+      changes.length ? formatSchedule(changes) : Promise.reject('No changes'))
     .then(messages => sendInOrder(messages))
     .then(() => kinospartak.commitChanges())
+    .catch(error => console.error(error))
 };
 
-updateSchedule()
-  .catch(error => console.error(error))
+function updateNews() {
+  return kinospartak.getLatestNews()
+    .then(news =>
+      news.length ? formatNews(news) : Promise.reject('No news'))
+    .then(messages => sendInOrder(messages))
+    .then(() => kinospartak.setNewsOffset(new Date().toString()))
+    .catch(error => console.error(error))
+};
+
+Promise.all([
+  updateSchedule(),
+  updateNews()
+])
