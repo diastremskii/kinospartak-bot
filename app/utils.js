@@ -33,10 +33,13 @@ exports.sendInOrder = (bot, chatId, messages) => {
 /**
  * formatNews - format news to Telegram HTML messages
  *
- * @param  {Object[]} news array of news
+ * @param  {Object|Object[]} news array of news
  * @return {String[]}      array of html marked up messages
  */
 exports.formatNews = (news) => {
+  if (!(news instanceof Array)) {
+    return `<a href="${news.link}">${news.title}</a>\n${news.description}`
+  }
   return news.map((news) => {
     let message = '';
     message += `<a href="${news.link}">${news.title}</a>`;
