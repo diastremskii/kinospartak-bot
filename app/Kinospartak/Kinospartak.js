@@ -15,12 +15,20 @@ const kinospartakModel = require('./kinospartakModel');
 /**
  * @class Kinospartak controller
  * @type {Object}
- *
+ * @param  {Number} updateInterval cache update interval
  */
 
 module.exports = class Kinospartak {
-  constructor() {
-
+  constructor(updateInterval) {
+    setInterval(() => {
+      Promise.all([
+        kinospartakModel.getSchedule(),
+        kinospartakModel.getNews()
+      ]).then(([schedule, news]) => {
+          this.schedule = schedule;
+          this.news = news;
+        })
+    }, updateInterval);
   };
 
   /**
@@ -46,8 +54,7 @@ module.exports = class Kinospartak {
     return Promise.all([
       this.getSchedule(),
       this._getOldSchedule()
-    ])
-      .then(([schedule, oldSchedule]) =>
+    ]).then(([schedule, oldSchedule]) =>
         this._diffSchedule(schedule, oldSchedule));
   };
 
@@ -61,12 +68,16 @@ module.exports = class Kinospartak {
   };
 
   /**
-   * getNews - get all news
+   * getNews - get news from model or cache
    *
    * @return {Promise}  resolves to array of news from rss feed
    */
   getNews() {
-    return kinospartakModel.getNews();
+    if (this.news) {
+      return Promise.resolve(this.news);
+    };
+    return kinospartakModel.getNews()
+      .then(news => this.news = news)
   };
 
   /**
@@ -78,8 +89,7 @@ module.exports = class Kinospartak {
     return Promise.all([
       this.getNews(),
       kinospartakModel.getNewsOffset()
-    ])
-      .then(([news, newsOffset]) => {
+    ]).then(([news, newsOffset]) => {
         return news.filter(item => {
           return item.pubDate > newsOffset;
         });
@@ -97,11 +107,7 @@ module.exports = class Kinospartak {
    * @private
    */
   _getOldSchedule() {
-    if (this.oldSchedule) {
-      return Promise.resolve(this.oldSchedule);
-    };
-    return kinospartakModel.loadSchedule()
-      .then(schedule => this.oldSchedule = schedule);
+    return kinospartakModel.loadSchedule();
   };
 
   /**
