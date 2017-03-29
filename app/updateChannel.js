@@ -22,7 +22,6 @@ function updateSchedule() {
         utils.formatSchedule(changes) : Promise.reject('No changes'))
     .then(messages => utils.sendInOrder(bot, config.CHANNEL, messages))
     .then(() => kinospartak.commitChanges())
-    .catch(error => console.error(error))
 };
 
 /**
@@ -37,10 +36,9 @@ function updateNews() {
         utils.formatNews(news) : Promise.reject('No news'))
     .then(messages => utils.sendInOrder(bot, config.CHANNEL, messages))
     .then(() => kinospartak.setNewsOffset(new Date().toString()))
-    .catch(error => console.error(error))
 };
 
 Promise.all([
   updateSchedule(),
   updateNews()
-])
+]).catch(error => console.error(error))

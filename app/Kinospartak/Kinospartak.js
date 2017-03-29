@@ -20,6 +20,9 @@ const kinospartakModel = require('./kinospartakModel');
 
 module.exports = class Kinospartak {
   constructor(updateInterval) {
+    if (!updateInterval) {
+      return;
+    };
     setInterval(() => {
       Promise.all([
         kinospartakModel.getSchedule(),
