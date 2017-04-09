@@ -38,7 +38,5 @@ function updateNews() {
     .then(() => kinospartak.setNewsOffset(new Date().toString()))
 };
 
-Promise.all([
-  updateSchedule(),
-  updateNews()
-]).catch(error => console.error(error))
+updateSchedule()
+  .then(() => updateNews())
