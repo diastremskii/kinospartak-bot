@@ -18,9 +18,13 @@ const kinospartak = new Kinospartak();
 function updateSchedule() {
   return kinospartak.getChanges()
     .then(changes =>
-      changes.length ?
-        utils.formatSchedule(changes) : Promise.reject('No changes'))
-    .then(messages => utils.sendInOrder(bot, config.CHANNEL, messages))
+      changes.length
+        ? utils.formatSchedule(changes)
+        : undefined)
+    .then(messages => 
+      messages
+        ? utils.sendInOrder(bot, config.CHANNEL, messages)
+        : undefined)
     .then(() => kinospartak.commitChanges())
 };
 
@@ -32,11 +36,25 @@ function updateSchedule() {
 function updateNews() {
   return kinospartak.getLatestNews()
     .then(news =>
-      news.length ?
-        utils.formatNews(news) : Promise.reject('No news'))
-    .then(messages => utils.sendInOrder(bot, config.CHANNEL, messages))
+      news.length
+        ? utils.formatNews(news)
+        : undefined)
+    .then(messages => 
+      messages
+        ? utils.sendInOrder(bot, config.CHANNEL, messages)
+        : undefined)
     .then(() => kinospartak.setNewsOffset(new Date().toString()))
 };
 
-updateSchedule()
-  .then(() => updateNews())
+function update() {
+  return Promise.all([
+    updateSchedule,
+    updateNews
+  ]).catch((err) => {
+    setTimeout(() => {
+        update();
+      }, 60 * 5);
+  })
+}
+
+update();
