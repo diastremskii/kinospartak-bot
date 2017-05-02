@@ -47,14 +47,14 @@ function updateNews() {
 };
 
 function update() {
-  return Promise.all([
-    updateSchedule(),
-    updateNews()
-  ]).catch((err) => {
-    setTimeout(() => {
-        update();
-    }, 1000 * 60 * 5);
-  })
+  return updateSchedule()
+    .then(updateNews)
+    .then(kinospartak.closeConnection)
+    .catch((err) => {
+      setTimeout(() => {
+          update();
+      }, 1000 * 60 * 5);
+    })
 }
 
 update();

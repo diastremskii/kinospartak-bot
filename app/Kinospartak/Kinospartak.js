@@ -103,6 +103,15 @@ module.exports = class Kinospartak {
     return kinospartakModel.setNewsOffset(newsOffset);
   };
 
+
+  /**
+   * closeConnection - closes memjs connection
+   * 
+   */
+  closeConnection() {
+    return kinospartakModel.closeConnection();
+  };
+
   /**
    * _getOldSchedule - get schedule from storage
    *

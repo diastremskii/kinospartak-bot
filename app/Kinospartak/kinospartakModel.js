@@ -31,8 +31,10 @@ exports.loadSchedule = () => {
 };
 
 exports.saveSchedule = (schedule) => {
-  return new Promise(function(resolve, reject) {
-    memjsClient.set('schedule', JSON.stringify(schedule));
+  return new Promise((resolve, reject) => {
+    memjsClient.set('schedule', JSON.stringify(schedule), (err, value) => {
+      resolve(value);
+    });
   }).catch(reason => console.error(reason));
 };
 
@@ -96,7 +98,13 @@ exports.getNewsOffset = (date) => {
 };
 
 exports.setNewsOffset = (date) => {
-  return new Promise(function(resolve, reject) {
-    memjsClient.set('newsOffset', date);
+  return new Promise((resolve, reject) => {
+    memjsClient.set('newsOffset', date, (err, value) => {
+      resolve(value);
+    });
   }).catch(reason => console.error(reason));
+};
+
+exports.closeConnection = () => {
+  return memjsClient.close();
 };
