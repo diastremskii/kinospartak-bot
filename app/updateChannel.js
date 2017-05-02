@@ -48,8 +48,8 @@ function updateNews() {
 
 function update() {
   return Promise.all([
-    updateSchedule,
-    updateNews
+    updateSchedule(),
+    updateNews()
   ]).catch((err) => {
     setTimeout(() => {
         update();
